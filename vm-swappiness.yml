@@ -1,0 +1,10 @@
+---
+- hosts: all
+  gather_facts: True
+  become: yes
+  tasks:
+    - sysctl:
+        name: vm.swappiness
+        value: 1
+        state: present
+        reload: yes
