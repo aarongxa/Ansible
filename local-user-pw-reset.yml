@@ -1,0 +1,22 @@
+- hosts: all
+  gather_facts: False
+  become: True
+  vars_prompt:
+    - name: reset_username
+      prompt: "Enter the username you want to reset"
+      private: no
+    - name: reset_password
+      prompt: "Enter the new password"
+      encrypt: "sha512_crypt"
+      confirm: yes
+      salt_size: 7
+
+  tasks:
+    - name: Reset expiration date for "{{ reset_username }}"
+      raw: chage -I 180 -m 1 -M 90 -E -1 -W 14 "{{ reset_username }}"
+      ignore_errors: True
+
+    - name: Set new password for "{{ reset_username }}"
+      user:
+        name: "{{ reset_username }}"
+        password: "{{ reset_password }}"
